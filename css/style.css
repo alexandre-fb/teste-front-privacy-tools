@@ -1,0 +1,22 @@
+.loading {
+  display: none;
+  border: 5px solid #eaeaea;
+  border-top: 5px solid #0147BA;
+  border-radius: 50%;
+  width: 30px; 
+  height: 30px;
+  animation: spin 700ms linear infinite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loading.visible {
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
