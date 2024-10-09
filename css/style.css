@@ -1,12 +1,135 @@
+/* start reset */
+/* start reset */
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+img,
+header,
+footer,
+button {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* end reset */
+
+body {
+  font-family: 'Roboto', sans-serif;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.content-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.enable-draw-area, .pagination-area {
+  width: 100%;
+  background-color: #1c2c45;
+  min-height: 40px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.button-default {
+  background-color: #4d72ae;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 200ms ease-in-out;
+}
+
+.button-default:hover {
+  background-color: #456598;
+}
+
+.enable-draw__button.active {
+  background-color: #d25858;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.enable-draw__button.active:hover {
+  background-color: #c35252;
+}
+
+.image-area {
+  flex: 1;
+  background-color: #fff;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-area__image {
+  width: 100%;
+  height: 100%;
+  max-width: 532px;
+  max-height: 709px;
+  object-fit: contain;
+}
+
+.pagination__input-area {
+  background-color: #fff;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.pagination__input-area input {
+ border: none;
+ max-width: 40px;
+ padding: 3px;
+ text-align: right;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.pagination__input-area span {
+  font-size: .9rem;
+  display: block;
+  width: 60px;
+ }
+
 .loading {
   display: none;
   border: 5px solid #eaeaea;
   border-top: 5px solid #0147BA;
   border-radius: 50%;
-  width: 30px; 
+  width: 30px;
   height: 30px;
   animation: spin 700ms linear infinite;
   position: fixed;
+  z-index: 999;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -17,6 +140,11 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
