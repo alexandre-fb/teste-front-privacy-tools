@@ -8,10 +8,30 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div class="content-wrapper">
+
+    <section class="enable-draw-area">
+      <button class="button-default enable-draw__button active" data-button="enable-draw">Habilitar modo de desenho</button>
+    </section>
+
+    <section class="image-area">
+      <img src="" alt="" class="image-area__image" data-image>
+    </section>
+
+    <section class="pagination-area">
+      <button class="button-default" data-button="pagination-prev"><</button>
+      <button class="button-default" data-button="pagination-prev-10"><<</button>
+      <div class="pagination__input-area">
+        <input type="number" value="1">
+        <span class="">/ 100</span>
+      </div>
+      <button class="button-default" data-button="pagination-next">>></button>
+      <button class="button-default" data-button="pagination-next-10">></button>
+    </section>
+  </div>
   
   <div class="loading" data-loading></div>
 
-  <img src="" alt="" class="image" data-image>
 
   <script type="module" src="js/script.js"></script>
 </body>

@@ -8,10 +8,12 @@ const updateImageSrc = (image) => {
 const showLoading = (isVisible) => {
   if (isVisible) {
     loadingElement.classList.add("visible");
+    imageElement.style.display = "none";
     return;
   }
 
   loadingElement.classList.remove("visible");
+  imageElement.style.display = "block";
 };
 
 const fetchImage = async (page) => {
