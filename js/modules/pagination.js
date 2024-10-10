@@ -19,7 +19,7 @@ const updateCurrentPage = (amountPageToChange, pageToGo) => {
     currentPage += amountPageToChange;
   }
 
-  // console.log('currentPage += amountPageToChange;', currentPage += amountPageToChange);
+
   if (currentPage < 1) {
     currentPage = 1;
   } else if (currentPage > totalPages) {
