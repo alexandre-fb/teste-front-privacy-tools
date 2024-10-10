@@ -14,7 +14,6 @@ const currentPageFromLocalStorage = parseInt(localStorage.getItem("currentPage")
 const updateCurrentPage = (amountPageToChange, pageToGo) => {
   if (pageToGo) {
     currentPage = pageToGo;
-    console.log('entrou')
   } else {
     currentPage += amountPageToChange;
   }
