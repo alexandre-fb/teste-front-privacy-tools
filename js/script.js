@@ -1,3 +1,5 @@
-import { fetchAndUpdateImage } from "./modules/fetchAndUpdateImage.js";
+import { initPagination } from "./modules/pagination.js";
 
-fetchAndUpdateImage();
+document.addEventListener("DOMContentLoaded", () => {
+  initPagination();
+});
