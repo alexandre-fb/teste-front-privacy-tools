@@ -15,6 +15,7 @@ a,
 img,
 header,
 footer,
+canvas,
 button {
   margin: 0;
   padding: 0;
@@ -87,6 +88,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.image-area__image-wrapper {
+  width: fit-content;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .4);
+  position: relative;
 }
 
 .image-area__image {
