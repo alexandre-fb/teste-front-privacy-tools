@@ -1,38 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teste Front - Alexandre Bisognin</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Front - Alexandre Bisognin</title>
 
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <div class="content-wrapper">
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="content-wrapper">
+      <section class="enable-draw-area">
+        <button
+          class="button-default enable-draw__button active"
+          data-button="enable-draw"
+        >
+          Habilitar modo de desenho
+        </button>
+      </section>
 
-    <section class="enable-draw-area">
-      <button class="button-default enable-draw__button active" data-button="enable-draw">Habilitar modo de desenho</button>
-    </section>
+      <section class="image-area">
+        <div class="image-area__image-wrapper" data-image="wrapper">
+          <img src="" alt="" class="image-area__image" data-image="image" />
+        </div>
+      </section>
 
-    <section class="image-area">
-      <img src="" alt="" class="image-area__image" data-image>
-    </section>
+      <section class="pagination-area">
+        <button
+          class="button-default"
+          data-button="pagination"
+          data-button-increment="-10"
+        >
+          <<
+        </button>
+        <button
+          class="button-default"
+          data-button="pagination"
+          data-button-increment="-1"
+        >
+          <
+        </button>
+        <div class="pagination__input-area">
+          <input type="number" value="1" data-input="current-page" />
+          <span class="">/ 1000</span>
+        </div>
+        <button
+          class="button-default"
+          data-button="pagination"
+          data-button-increment="1"
+        >
+          >
+        </button>
+        <button
+          class="button-default"
+          data-button="pagination"
+          data-button-increment="10"
+        >
+          >>
+        </button>
+      </section>
+    </div>
 
-    <section class="pagination-area">
-      <button class="button-default" data-button="pagination-prev-10"><<</button>
-      <button class="button-default" data-button="pagination-prev"><</button>
-      <div class="pagination__input-area">
-        <input type="number" value="1" data-input="pagination-current-page">
-        <span class="">/ 1000</span>
-      </div>
-      <button class="button-default" data-button="pagination-next">></button>
-      <button class="button-default" data-button="pagination-next-10">>></button>
-    </section>
-  </div>
-  
-  <div class="loading" data-loading></div>
+    <div class="loading" data-loading></div>
 
-
-  <script type="module" src="js/script.js"></script>
-</body>
+    <script type="module" src="js/script.js"></script>
+  </body>
 </html>
