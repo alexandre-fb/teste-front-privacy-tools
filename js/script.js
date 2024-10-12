@@ -1,5 +1,5 @@
-import { initPagination } from "./modules/pagination.js";
+import App from "./classes/app/app.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  initPagination();
+  new App();
 });
