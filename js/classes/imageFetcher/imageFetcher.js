@@ -7,11 +7,16 @@ class ImageFetcher {
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization: "Basic 96f9c92582aed580ba10a780e8af7fea57531c9c",
     };
+    this.drawer = null;
   }
 
   updateImageSrc = (image) => {
     this.imageElement.src = image;
   };
+
+  setDrawer(drawer) {
+    this.drawer = drawer;
+  }
 
   showLoading = (isVisible) => {
     if (isVisible) {
@@ -48,9 +53,15 @@ class ImageFetcher {
     try {
       const data = await this.fetchImage(page);
       this.updateImageSrc(data.image);
+      this.updateDrawer();
     } catch (error) {
       console.log("Não foi possível atualizar a página", error);
     }
+  };
+
+  updateDrawer = () => {
+    this.drawer.init();
+    this.drawer.updateCanvas();
   };
 }
 
