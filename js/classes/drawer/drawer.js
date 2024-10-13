@@ -1,28 +1,32 @@
 class Drawer {
-  constructor(zoom) {
+  constructor(pagination, zoom) {
     this.canvas = document.getElementById("drawer");
     this.image = document.querySelector("[data-image='image']");
     this.ctx = this.canvas.getContext("2d");
     this.mouseIsDown = false;
     this.square = new Square(0, 0, 0, 0);
-    this.squares = this.loadSquaresFromLocalStorage() || [];
+    this.squares = [];
     this.zoom = zoom;
+    this.originalImageSize = null;
+    this.pagination = pagination;
   }
 
   init = () => {
-    this.canvas.width = this.getImageSize().width;
-    this.canvas.height = this.getImageSize().height;
-    if (this.squares.length > 0) this.updateCanvas();
-    window.addEventListener("resize", () => {
-      this.canvas.width = this.getImageSize().width;
-      this.canvas.height = this.getImageSize().height;
-      this.updateCanvas();
-    });
+    this.originalImageSize = this.getImageSize();
+    this.updateCanvasSize();
+    this.loadSquaresFromLocalStorage();
+    window.addEventListener("resize", this.updateCanvasSize);
 
     this.canvas.addEventListener("mousedown", this.handleMouseDown);
     this.canvas.addEventListener("mouseup", this.handleMouseUp);
     this.canvas.addEventListener("mousemove", this.handleMouseMove);
     this.canvas.addEventListener("contextmenu", this.handleRemoveSquare);
+  };
+
+  updateCanvasSize = () => {
+    this.canvas.width = this.getImageSize().width;
+    this.canvas.height = this.getImageSize().height;
+    this.updateCanvas();
   };
 
   handleMouseDown = (event) => {
@@ -32,7 +36,6 @@ class Drawer {
       this.handleRemoveSquare(event);
       return;
     }
-    console.log("event", event);
     this.mouseIsDown = true;
     const { x, y } = this.getAdjustedCoordinates(event);
     this.square.initialX = x;
@@ -51,10 +54,10 @@ class Drawer {
 
   getAdjustedCoordinates = (event) => {
     const currentZoom = this.zoom.getCurrentZoom();
-    console.log("currentZoom", currentZoom);
     const imageArea = this.image.getBoundingClientRect();
-    const x = (event.clientX - imageArea.left) / currentZoom;
-    const y = (event.clientY - imageArea.top) / currentZoom;
+    const scale = this.getScale();
+    const x = (event.clientX - imageArea.left) / currentZoom / scale.scaleX;
+    const y = (event.clientY - imageArea.top) / currentZoom / scale.scaleY;
     return { x, y };
   };
 
@@ -62,7 +65,6 @@ class Drawer {
     if (event.button === 2) return;
     this.mouseIsDown = false;
 
-    console.log(!this.square.isValidSize());
     if (!this.square.isValidSize()) {
       this.square = new Square(0, 0, 0, 0);
       this.updateCanvas();
@@ -79,22 +81,27 @@ class Drawer {
     );
     this.square = new Square(0, 0, 0, 0);
     this.saveSquaresToLocalStorage();
-    console.log("this.squares mouse up", this.squares);
   };
 
   updateCanvas = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.squares.forEach((square) => square.draw(this.ctx));
-    this.square.draw(this.ctx);
+    const scale = this.getScale();
+    this.squares.forEach((square) => square.draw(this.ctx, scale));
+    this.square.draw(this.ctx, scale);
+  };
+
+  getScale = () => {
+    const currentSize = this.getImageSize();
+    const scaleX = currentSize.width / this.originalImageSize.width;
+    const scaleY = currentSize.height / this.originalImageSize.height;
+    return { scaleX, scaleY };
   };
 
   handleRemoveSquare = (event) => {
     event.preventDefault();
     event.stopPropagation();
     const { x, y } = this.getAdjustedCoordinates(event);
-    console.log("this.squares right click", this.squares);
     let squareRemoved = false;
-    console.log("x, y", x, y);
 
     for (let i = this.squares.length - 1; i >= 0; i--) {
       const square = this.squares[i];
@@ -135,23 +142,39 @@ class Drawer {
       finalX: square.finalX,
       finalY: square.finalY,
     }));
-    localStorage.setItem("squares", JSON.stringify(squaresData));
+
+    const currentPage = this.pagination.currentPage;
+    const data = JSON.parse(localStorage.getItem("squaresData")) || {};
+    data[currentPage] = squaresData;
+
+    localStorage.setItem("squaresData", JSON.stringify(data));
   };
 
   loadSquaresFromLocalStorage = () => {
-    const squaresData = JSON.parse(localStorage.getItem("squares"));
-    if (squaresData) {
-      return squaresData.map(
-        (square) =>
-          new Square(
-            square.initialX,
-            square.initialY,
-            square.finalX,
-            square.finalY
-          )
-      );
+    const data = JSON.parse(localStorage.getItem("squaresData"));
+
+    if (data) {
+      const currentPage = this.pagination.currentPage;
+      const squares = data[currentPage];
+
+      if (squares && squares.length) {
+        this.squares = squares.map(
+          (square) =>
+            new Square(
+              square.initialX,
+              square.initialY,
+              square.finalX,
+              square.finalY
+            )
+        );
+      } else {
+        this.squares = [];
+      }
+    } else {
+      this.squares = [];
     }
-    return null;
+
+    this.updateCanvas();
   };
 }
 
@@ -165,10 +188,15 @@ class Square {
     this.height = this.finalY - this.initialY;
   }
 
-  draw = (ctx) => {
+  draw = (ctx, scale) => {
     this.updateDimensions();
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(this.initialX, this.initialY, this.width, this.height);
+    ctx.fillRect(
+      this.initialX * scale.scaleX,
+      this.initialY * scale.scaleY,
+      this.width * scale.scaleX,
+      this.height * scale.scaleY
+    );
   };
 
   updateDimensions = () => {
@@ -177,7 +205,6 @@ class Square {
   };
 
   isValidSize = () => {
-    console.log("this.width", this.width, this.height);
     return Math.abs(this.width) >= 2 && Math.abs(this.height) >= 2;
   };
 }
