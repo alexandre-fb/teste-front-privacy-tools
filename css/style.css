@@ -16,6 +16,7 @@ img,
 header,
 footer,
 canvas,
+section,
 button {
   margin: 0;
   padding: 0;
@@ -32,7 +33,7 @@ body {
 
 .content-wrapper {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,13 +88,18 @@ body {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
+  padding: 40px 24px 60px 24px;
+  overflow: auto;
+  margin-bottom: 40px;
 }
 
 .image-area__image-wrapper {
   width: fit-content;
   box-shadow: 0 0 5px rgba(0, 0, 0, .4);
   position: relative;
+  transform-origin: top;
 }
 
 .image-area__image {
@@ -102,6 +108,14 @@ body {
   max-width: 532px;
   max-height: 709px;
   object-fit: contain;
+  display: block;
+}
+
+.image-area__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 2px solid orange;
 }
 
 .pagination__input-area {
