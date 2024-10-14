@@ -39,7 +39,8 @@ body {
   align-items: center;
 }
 
-.enable-draw-area, .pagination-area {
+.enable-draw-area,
+.pagination-area {
   width: 100%;
   background-color: #1c2c45;
   min-height: 40px;
@@ -48,12 +49,14 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  position: relative;
+  z-index: 99;
 }
 
 .button-default {
   background-color: #4d72ae;
   color: #fff;
-  padding: 8px 16px;
+  padding: 8px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -66,11 +69,11 @@ body {
 
 .button-default:disabled {
   opacity: .50;
-  background-color: #4d72ae!important;
+  background-color: #4d72ae !important;
 }
 
-.enable-draw__button.active {
-  background-color: #d25858;
+.enable-draw__button {
+  font-size: 1rem;
   color: #fff;
   padding: 8px 16px;
   border: none;
@@ -78,9 +81,58 @@ body {
   cursor: pointer;
 }
 
+.enable-draw__button.active {
+  background-color: #d25858;
+}
+
 .enable-draw__button.active:hover {
   background-color: #c35252;
 }
+
+.effects-controllers-area {
+  width: 100%;
+  background-color: #c8c8c8;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  transition: 200ms ease-in-out;
+  height: 0;
+}
+
+.effects-controllers-area.active {
+  height: 50px;
+}
+
+.effects-controllers__label {
+  color: #4a4a4a;
+  font-size: small;
+}
+
+.effects-controllers__effect-button {
+  background-color: #4a4a4a;
+}
+
+.effects-controllers__effect-button.active {
+  background-color: #4d72ae;
+}
+
+.effects-controllers__divisor {
+  width: 1px;
+  height: 50%;
+  background-color: #9d9d9d;
+}
+
+.effects-controllers__clear-button {
+  background-color: #4a4a4a;
+}
+
+.effects-controllers__clear-button:hover {
+  background-color: #c35252;
+}
+
 
 .image-area {
   flex: 1;
@@ -99,7 +151,6 @@ body {
   width: fit-content;
   box-shadow: 0 0 5px rgba(0, 0, 0, .4);
   position: relative;
-  transform-origin: top;
 }
 
 .image-area__image {
@@ -115,7 +166,6 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  border: 2px solid orange;
 }
 
 .pagination__input-area {
@@ -128,10 +178,10 @@ body {
 }
 
 .pagination__input-area input {
- border: none;
- max-width: 40px;
- padding: 3px;
- text-align: right;
+  border: none;
+  max-width: 40px;
+  padding: 3px;
+  text-align: right;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -144,7 +194,8 @@ input[type="number"]::-webkit-inner-spin-button {
   font-size: .9rem;
   display: block;
   width: 60px;
- }
+  transform: translateY(-1px);
+}
 
 .loading {
   display: none;
