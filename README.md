@@ -17,11 +17,8 @@ Obs.: Qualquer problema, também está disponível no githubpages [Teste Front P
   ```bash
   https://github.com/alexandre-fb/teste-front-privacy-tools
   ```
-2. Navegue até o diretório do projeto:
-  ```bash
-  cd teste-front-privacy-tools
-  ```
-3. Para rodar o projeto localmente, é necessário utilizar um servidor local, pois abrir o arquivo `index.html` diretamente no navegador pode causar problemas de CORS (Cross-Origin Resource Sharing) nas requisições HTTP. Se você estiver usando o Visual Studio Code, pode utilizar a extensão **Live Server** para facilitar esse processo:
+
+2. Para rodar o projeto localmente, é necessário utilizar um servidor local, pois abrir o arquivo `index.html` diretamente no navegador pode causar problemas de CORS (Cross-Origin Resource Sharing) nas requisições HTTP. Se você estiver usando o Visual Studio Code, pode utilizar a extensão **Live Server** para facilitar esse processo:
 
   - **Instale a extensão Live Server:**
     - Abra o Visual Studio Code.
