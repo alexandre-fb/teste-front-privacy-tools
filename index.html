@@ -11,10 +11,38 @@
     <div class="content-wrapper">
       <section class="enable-draw-area">
         <button
-          class="button-default enable-draw__button active"
+          class="button-default enable-draw__button"
           data-button="enable-draw"
         >
           Habilitar modo de desenho
+        </button>
+      </section>
+
+      <section class="effects-controllers-area">
+        <button 
+          class="effects-controllers__effect-button button-default" 
+          data-button="hachura-effect"
+        >
+          Hachura
+        </button>
+        <button
+          class="effects-controllers__effect-button button-default"
+          data-button="blur-effect"
+        >
+          Desfoque
+        </button>
+        <button
+          class="effects-controllers__effect-button button-default"
+          data-button="basic-effect"
+        >
+          Básico
+        </button>
+        <span class="effects-controllers__divisor"></span>
+        <button
+          class="effects-controllers__clear-button button-default"
+          data-button="clear"
+        >
+          Limpar
         </button>
       </section>
 
@@ -41,8 +69,8 @@
           <
         </button>
         <div class="pagination__input-area">
-          <input type="number" value="1" data-input="current-page" />
-          <span class="">/ 1000</span>
+          <input type="number" data-input="current-page" />
+          <span data-input="total-page">...</span>
         </div>
         <button
           class="button-default"
@@ -62,7 +90,8 @@
     </div>
 
     <div class="loading" data-loading></div>
+    <img src="/assets/images/hachura_pattern.webp" data-image="hachura-texture" style="display: none;"></img>
 
-    <script type="module" src="js/script.js"></script>
+    <script type="module" src="js/script.js" ></script>
   </body>
 </html>
