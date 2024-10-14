@@ -1,3 +1,5 @@
+import { Square, SquareBlur, SquareHachura } from "./squares.js";
+
 class Drawer {
   constructor(pagination, zoom) {
     this.canvas = document.getElementById("drawer");
@@ -9,28 +11,40 @@ class Drawer {
     this.zoom = zoom;
     this.originalImageSize = null;
     this.pagination = pagination;
+    this.drawModeIsEnable = false;
+    this.selectedEffect = "null";
   }
 
   init = () => {
     this.originalImageSize = this.getImageSize();
     this.updateCanvasSize();
     this.loadSquaresFromLocalStorage();
-    window.addEventListener("resize", this.updateCanvasSize);
+    window.addEventListener("resize", this.handleWindowResize);
 
     this.canvas.addEventListener("mousedown", this.handleMouseDown);
     this.canvas.addEventListener("mouseup", this.handleMouseUp);
     this.canvas.addEventListener("mousemove", this.handleMouseMove);
-    this.canvas.addEventListener("contextmenu", this.handleRemoveSquare);
+    this.canvas.addEventListener("contextmenu", this.handleContextMenu);
   };
 
-  updateCanvasSize = () => {
-    this.canvas.width = this.getImageSize().width;
-    this.canvas.height = this.getImageSize().height;
-    this.updateCanvas();
+  handleContextMenu = (event) => {
+    event.preventDefault();
+    if (!this.drawModeIsEnable) return;
+    this.handleRemoveSquare(event);
+  };
+
+  handleWindowResize = () => {
+    this.zoom.zoomSpecificValue(1);
+    this.updateCanvasSize();
   };
 
   handleMouseDown = (event) => {
     event.preventDefault();
+    if (!this.drawModeIsEnable) return;
+    if (this.zoom.getCurrentZoom() !== 1) {
+      this.zoom.zoomSpecificValue(1);
+      return;
+    }
     if (event.button === 2) return;
     if (event.button === 1) {
       this.handleRemoveSquare(event);
@@ -38,8 +52,7 @@ class Drawer {
     }
     this.mouseIsDown = true;
     const { x, y } = this.getAdjustedCoordinates(event);
-    this.square.initialX = x;
-    this.square.initialY = y;
+    this.square = this.createSquare(x, y);
   };
 
   handleMouseMove = (event) => {
@@ -52,6 +65,38 @@ class Drawer {
     }
   };
 
+  handleMouseUp = (event) => {
+    if (!this.drawModeIsEnable) return;
+    if (event.button === 2) return;
+    this.mouseIsDown = false;
+
+    if (!this.square.isValidSize()) {
+      this.square = new Square(0, 0, 0, 0);
+      this.updateCanvas();
+      return;
+    }
+    this.squares.push(this.square);
+    this.square = null;
+    this.saveSquaresToLocalStorage();
+  };
+
+  updateCanvasSize = () => {
+    this.canvas.width = this.getImageSize().width;
+    this.canvas.height = this.getImageSize().height;
+    this.updateCanvas();
+  };
+
+  createSquare = (initialX, initialY) => {
+    switch (this.selectedEffect) {
+      case "blur":
+        return new SquareBlur(initialX, initialY, initialX, initialY);
+      case "hachura":
+        return new SquareHachura(initialX, initialY, initialX, initialY);
+      default:
+        return new Square(initialX, initialY, initialX, initialY);
+    }
+  };
+
   getAdjustedCoordinates = (event) => {
     const currentZoom = this.zoom.getCurrentZoom();
     const imageArea = this.image.getBoundingClientRect();
@@ -61,33 +106,28 @@ class Drawer {
     return { x, y };
   };
 
-  handleMouseUp = (event) => {
-    if (event.button === 2) return;
-    this.mouseIsDown = false;
-
-    if (!this.square.isValidSize()) {
-      this.square = new Square(0, 0, 0, 0);
-      this.updateCanvas();
-      return;
-    }
-
-    this.squares.push(
-      new Square(
-        this.square.initialX,
-        this.square.initialY,
-        this.square.finalX,
-        this.square.finalY
-      )
-    );
-    this.square = new Square(0, 0, 0, 0);
-    this.saveSquaresToLocalStorage();
-  };
-
   updateCanvas = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     const scale = this.getScale();
-    this.squares.forEach((square) => square.draw(this.ctx, scale));
-    this.square.draw(this.ctx, scale);
+    this.squares.forEach((square) => {
+      if (square instanceof SquareBlur) {
+        square.drawBlur(this.ctx, this.image, scale);
+      } else if (square instanceof SquareHachura) {
+        square.drawHachura(this.ctx, scale);
+      } else {
+        square.draw(this.ctx, scale);
+      }
+    });
+
+    if (this.square) {
+      if (this.square instanceof SquareBlur) {
+        this.square.drawBlur(this.ctx, this.image, scale);
+      } else if (this.square instanceof SquareHachura) {
+        this.square.drawHachura(this.ctx, scale);
+      } else {
+        this.square.draw(this.ctx, scale);
+      }
+    }
   };
 
   getScale = () => {
@@ -136,16 +176,9 @@ class Drawer {
   };
 
   saveSquaresToLocalStorage = () => {
-    const squaresData = this.squares.map((square) => ({
-      initialX: square.initialX,
-      initialY: square.initialY,
-      finalX: square.finalX,
-      finalY: square.finalY,
-    }));
-
     const currentPage = this.pagination.currentPage;
     const data = JSON.parse(localStorage.getItem("squaresData")) || {};
-    data[currentPage] = squaresData;
+    data[currentPage] = this.squares;
 
     localStorage.setItem("squaresData", JSON.stringify(data));
   };
@@ -156,17 +189,41 @@ class Drawer {
     if (data) {
       const currentPage = this.pagination.currentPage;
       const squares = data[currentPage];
-
       if (squares && squares.length) {
-        this.squares = squares.map(
-          (square) =>
-            new Square(
-              square.initialX,
-              square.initialY,
-              square.finalX,
-              square.finalY
-            )
-        );
+        squares.forEach((square) => {
+          switch (square.type) {
+            case "blur":
+              this.squares.push(
+                new SquareBlur(
+                  square.initialX,
+                  square.initialY,
+                  square.finalX,
+                  square.finalY
+                )
+              );
+              break;
+            case "hachura":
+              this.squares.push(
+                new SquareHachura(
+                  square.initialX,
+                  square.initialY,
+                  square.finalX,
+                  square.finalY
+                )
+              );
+              break;
+            default:
+              this.squares.push(
+                new Square(
+                  square.initialX,
+                  square.initialY,
+                  square.finalX,
+                  square.finalY
+                )
+              );
+              break;
+          }
+        });
       } else {
         this.squares = [];
       }
@@ -175,37 +232,6 @@ class Drawer {
     }
 
     this.updateCanvas();
-  };
-}
-
-class Square {
-  constructor(initialX, initialY, finalX, finalY) {
-    this.initialX = initialX;
-    this.initialY = initialY;
-    this.finalX = finalX;
-    this.finalY = finalY;
-    this.width = this.finalX - this.initialX;
-    this.height = this.finalY - this.initialY;
-  }
-
-  draw = (ctx, scale) => {
-    this.updateDimensions();
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(
-      this.initialX * scale.scaleX,
-      this.initialY * scale.scaleY,
-      this.width * scale.scaleX,
-      this.height * scale.scaleY
-    );
-  };
-
-  updateDimensions = () => {
-    this.width = this.finalX - this.initialX;
-    this.height = this.finalY - this.initialY;
-  };
-
-  isValidSize = () => {
-    return Math.abs(this.width) >= 2 && Math.abs(this.height) >= 2;
   };
 }
 
