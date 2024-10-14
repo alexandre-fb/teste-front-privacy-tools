@@ -168,6 +168,26 @@ body {
   left: 0;
 }
 
+.image-area__error {
+  width: 100%;
+  height: auto;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background-color: #fff;
+  text-align: center;
+  top: 50%;
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+.image-area__error.active {
+  display: flex;
+}
+
 .pagination__input-area {
   background-color: #fff;
   padding: 5px;
