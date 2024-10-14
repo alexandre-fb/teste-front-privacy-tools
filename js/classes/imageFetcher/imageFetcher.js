@@ -2,6 +2,7 @@ class ImageFetcher {
   constructor() {
     this.loadingElement = document.querySelector("[data-loading]");
     this.imageElement = document.querySelector("[data-image='image']");
+    this.errorElement = document.querySelector("[data-error='fetch-image']")
     this.api_url = "https://api-hachuraservi1.websiteseguro.com/api/document";
     this.headers = {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -10,6 +11,7 @@ class ImageFetcher {
     this.drawer = null;
     this.pagination = null;
     this.totalPage = 1;
+    this.hasFetchError = false
   }
 
   updateImageSrc = (image) => {
@@ -24,30 +26,13 @@ class ImageFetcher {
     this.pagination = pagination;
   }
 
-  showLoading = (isVisible) => {
-    if (isVisible) {
-      this.loadingElement.classList.add("visible");
-      this.imageElement.style.display = "none";
-      this.drawer.canvas.style.display = "none";
-      this.pagination.paginationButtons.forEach((button) => {
-        button.disabled = true;
-      });
-    } else {
-      this.loadingElement.classList.remove("visible");
-      this.imageElement.style.display = "block";
-      this.drawer.canvas.style.display = "block";
-      this.pagination.paginationButtons.forEach((button) => {
-        button.disabled = false;
-      });
-    }
-  };
-
-  fetchImage = async (page) => {
+  fetchImage = async (page, isFirstFetch) => {
     const body = new URLSearchParams({
       page: page,
     });
 
     try {
+      this.hasFetchError = false;
       this.showLoading(true);
       const response = await fetch(this.api_url, {
         method: "POST",
@@ -55,14 +40,52 @@ class ImageFetcher {
         body,
       });
 
-      this.setTotalPage(response);
-      this.pagination.setTotalPages(this.totalPage);
-
+      if(isFirstFetch) {
+        this.setTotalPage(response);
+      }
+      
       return await response.json();
     } catch (error) {
       console.log("Não foi possível carregar a imagem", error);
+      this.hasFetchError = true;
     } finally {
       this.showLoading(false);
+    }
+  };
+
+  showLoading = (isVisible) => {
+    if (isVisible) {
+      this.loadingElement.classList.add("visible");
+      this.disablePaginationButtons(true);
+      this.updateElementsVisibility(true);
+    } else {
+      this.loadingElement.classList.remove("visible");
+      this.disablePaginationButtons(false);
+      this.updateElementsVisibility(false);
+    }
+  };
+
+  disablePaginationButtons = (isDisabled) => {
+    this.pagination.paginationButtons.forEach((button) => {
+      button.disabled = isDisabled;
+    });
+  };
+  
+  updateElementsVisibility = (loadingIsActive) => {
+    if (loadingIsActive) {
+      this.imageElement.style.display = 'none';
+      this.drawer.canvas.style.display = 'none';
+      this.errorElement.classList.remove('active');
+      return
+    }
+    if (this.hasFetchError) {
+      this.imageElement.style.display = 'none';
+      this.drawer.canvas.style.display = 'none';
+      this.errorElement.classList.add('active');
+    } else {
+      this.imageElement.style.display = 'block';
+      this.drawer.canvas.style.display = 'block';
+      this.errorElement.classList.remove('active');
     }
   };
 
@@ -72,13 +95,15 @@ class ImageFetcher {
     } else {
       this.totalPage = 1493;
     }
+
+    this.pagination.setTotalPages(this.totalPage);
   };
 
-  fetchAndUpdateImage = async (page = 1, firstFetch) => {
+  fetchAndUpdateImage = async (page = 1, isFirstFetch = false) => {
     try {
-      const data = await this.fetchImage(page);
+      const data = await this.fetchImage(page, isFirstFetch);
       this.updateImageSrc(data.image);
-      if (firstFetch) return;
+      if (isFirstFetch) return;
       this.updateDrawer();
     } catch (error) {
       console.log("Não foi possível atualizar a página", error);
