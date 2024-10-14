@@ -8,7 +8,7 @@ class Pagination {
     );
     this.totalPageLabel = document.querySelector('[data-input="total-page"]');
     this.currentPage = 1;
-    this.totalPages = 100;
+    this.totalPages = null;
     this.imageFetcher = imageFetcher;
   }
 
@@ -55,6 +55,7 @@ class Pagination {
     this.validatePageRange();
     this.saveNewPageLocalStorage();
     this.imageFetcher.fetchAndUpdateImage(this.currentPage);
+    this.updateInputPage()
   };
 
   updateInputPage = () => {
