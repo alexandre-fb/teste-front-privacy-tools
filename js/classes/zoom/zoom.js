@@ -10,23 +10,38 @@ class Zoom {
     this.imageWrapper.addEventListener("wheel", (event) => {
       event.preventDefault();
       if (event.deltaY > 0) {
-        this.zoomOut();
+        this.zoomOut(event);
       } else {
-        this.zoomIn();
+        this.zoomIn(event);
       }
     });
   };
 
-  zoomIn = () => {
-    this.zoom = Math.min(this.zoom + 0.1, 3);
+  zoomIn = (event) => {
+    this.zoom = Math.min(this.zoom + 0.1, 1.8);
+
+    if (this.zoom > 1.8) this.zoom = 1.8;
+
+    const imageWrapperArea = this.imageWrapper.getBoundingClientRect();
+    const offsetX = event.clientX - imageWrapperArea.left;
+    const offsetY = event.clientY - imageWrapperArea.top;
+
+    const originX = (offsetX / imageWrapperArea.width) * 100;
+    const originY = (offsetY / imageWrapperArea.height) * 100;
+
+    this.imageWrapper.style.transformOrigin = `${originX}% ${originY}%`;
     this.imageWrapper.style.transform = `scale(${this.zoom})`;
-    if (this.zoom > 3) this.zoom = 3;
   };
 
-  zoomOut = () => {
+  zoomOut = (event) => {
     this.zoom = Math.max(this.zoom - 0.1, 1);
     this.imageWrapper.style.transform = `scale(${this.zoom})`;
     if (this.zoom < 1) this.zoom = 1;
+  };
+
+  zoomSpecificValue = (value) => {
+    this.zoom = value;
+    this.imageWrapper.style.transform = `scale(${this.zoom})`;
   };
 
   getCurrentZoom = () => {
