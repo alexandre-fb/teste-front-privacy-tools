@@ -145,6 +145,7 @@ body {
   padding: 40px 24px 60px 24px;
   overflow: auto;
   margin-bottom: 40px;
+  user-select: none;
 }
 
 .image-area__image-wrapper {
