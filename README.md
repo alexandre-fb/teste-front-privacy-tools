@@ -1,4 +1,4 @@
-# Teste Técnico - Front End - Privacy Tools
+# Teste Técnico - Front End
 
 ## Autor
 Alexandre Foschiera Bisognin
