@@ -85,9 +85,6 @@ class SquareBlur extends Square {
 class SquareHachura extends Square {
   constructor(initialX, initialY, finalX, finalY) {
     super(initialX, initialY, finalX, finalY, "hachura");
-    this.hachuraTexture = document.querySelector(
-      'img[data-image="hachura-texture"]'
-    );
   }
 
   drawHachura = (ctx, scale) => {
@@ -100,11 +97,28 @@ class SquareHachura extends Square {
     const width = endX - startX;
     const height = endY - startY;
 
-    if (this.hachuraTexture.complete) {
-      const pattern = ctx.createPattern(this.hachuraTexture, "repeat");
-      ctx.fillStyle = pattern;
-      ctx.fillRect(startX, startY, width, height);
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.rect(startX, startY, width, height);
+    ctx.clip();
+
+    const spacing = 10;
+    ctx.strokeStyle = "#1971c2";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    for (let x = startX - height; x < endX + height; x += spacing) {
+      ctx.moveTo(x, startY);
+      ctx.lineTo(x + height, endY);
     }
+    for (let y = startY - width; y < endY + width; y += spacing) {
+      ctx.moveTo(startX, y);
+      ctx.lineTo(endX, y + width);
+    }
+    ctx.stroke();
+
+    ctx.restore();
 
     ctx.strokeStyle = "#1971c2";
     ctx.lineWidth = 2;
