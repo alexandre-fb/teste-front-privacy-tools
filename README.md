@@ -1,5 +1,8 @@
 # Teste Técnico - Front End - Privacy Tools
 
+## Autor
+Alexandre Foschiera Bisognin
+
 ## Descrição
 Este projeto é um teste técnico para a vaga de Front End Pleno. O objetivo é demonstrar habilidades em HTML, CSS e JavaScript, desenvolvendo uma aplicação que permite adicionar retângulos com diferentes efeitos sobre uma imagem carregada a partir da API fornecida.
 
@@ -88,7 +91,9 @@ Outro ponto que não ficou como eu gostaria é o comportamento dos desenhos ao r
 
 Apesar desses pontos não finalizados, o projeto serviu como uma excelente oportunidade de aprendizado e desenvolvimento.
 
-## Autor
-Alexandre Foschiera Bisognin
+## Conclusão
+Gostei bastante do desafio proposto, achei bem desafiador e foi legal trabalhar sem frameworks por um tempo. Aproveitei o teste para experimentar novas formas de programar e aprendi muito durante o processo. 
+
+Apesar de alguns pontos não terem sido finalizados como eu gostaria, o projeto foi uma ótima oportunidade de aprendizado e crescimento. Estou satisfeito com o que consegui realizar e ansioso para aplicar esses conhecimentos em futuros projetos.
 
 
