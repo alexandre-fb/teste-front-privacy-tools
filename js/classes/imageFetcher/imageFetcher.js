@@ -55,12 +55,7 @@ class ImageFetcher {
         body,
       });
 
-      if (response.headers.has("total_page")) {
-        this.totalPage = response.headers.get("total_page");
-      } else {
-        this.totalPage = 1493;
-      }
-
+      this.setTotalPage(response);
       this.pagination.setTotalPages(this.totalPage);
 
       return await response.json();
@@ -68,6 +63,14 @@ class ImageFetcher {
       console.log("Não foi possível carregar a imagem", error);
     } finally {
       this.showLoading(false);
+    }
+  };
+
+  setTotalPage = (response) => {
+    if (response.headers.has("total_page")) {
+      this.totalPage = response.headers.get("total_page");
+    } else {
+      this.totalPage = 1493;
     }
   };
 
