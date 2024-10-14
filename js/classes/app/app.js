@@ -12,7 +12,7 @@ class App {
     this.drawer = new Drawer(this.pagination, this.zoom);
     this.controls = new Controls(this.drawer);
     this.imageFetcher.setDrawer(this.drawer);
-    this.imageFetcher.setPagination(this.pagination)
+    this.imageFetcher.setPagination(this.pagination);
     this.pageSavedLocalStorage = parseInt(
       localStorage.getItem("appCurrentPage")
     );
@@ -23,21 +23,26 @@ class App {
   async init() {
     this.controls.init();
     this.pagination.init();
-    this.loadSavedPage();
+    this.setCurrentPage();
     await this.updateImageAndInitializeDrawer();
   }
 
-  loadSavedPage() {
+  setCurrentPage() {
     if (this.pageSavedLocalStorage) {
       this.pagination.currentPage = this.pageSavedLocalStorage;
-      this.pagination.validatePageRange();
       this.pagination.updateInputPage();
+      return;
     }
+
+    this.pagination.currentPage = 1;
   }
 
   async updateImageAndInitializeDrawer() {
     try {
-      await this.imageFetcher.fetchAndUpdateImage(this.pagination.currentPage, true);
+      await this.imageFetcher.fetchAndUpdateImage(
+        this.pagination.currentPage,
+        true
+      );
       this.drawer.init();
     } catch (error) {
       console.error("Erro ao atualizar a imagem:", error);
